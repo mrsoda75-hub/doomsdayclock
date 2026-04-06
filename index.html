@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Domsday Clock (2038)</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #1e1e1e;
+    color: #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+  }
+  .time-box {
+    background: #2e2e2e;
+    padding: 20px 30px;
+    margin: 10px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px #000;
+  }
+  h1 {
+    margin-bottom: 20px;
+    color: #ff8c00;
+  }
+  .countdown {
+    font-size: 1.5rem;
+    margin-top: 10px;
+  }
+</style>
+</head>
+<body>
+
+<h1>32-bit Integer Overflow Countdown</h1>
+
+<div class="time-box">
+  <strong>Hell will break loose at this time for your region:</strong>
+  <div id="localTime"></div>
+</div>
+
+<div class="time-box">
+  <strong>Hell will break loose at this time for UTC time zone:</strong>
+  <div id="utcTime"></div>
+</div>
+
+<div class="time-box countdown">
+  <strong>Time before hell breaks loose in your region:</strong>
+  <div id="countdown"></div>
+</div>
+
+<script>
+// 1. Set the overflow time in UTC (JS months are 0-based)
+const overflowUTC = Date.UTC(2038, 0, 19, 3, 14, 8);
+const overflowDate = new Date(overflowUTC);
+
+// 2. Update times and countdown
+function updateTimes() {
+  const now = new Date();
+
+  // Local time
+  document.getElementById('localTime').textContent = overflowDate.toLocaleString();
+
+  // UTC time
+  document.getElementById('utcTime').textContent = overflowDate.toUTCString();
+
+  // Countdown
+  let diff = overflowUTC - now.getTime(); // milliseconds
+  if (diff < 0) {
+    document.getElementById('countdown').textContent = "Overflow has occurred!";
+    return;
+  }
+
+  let seconds = Math.floor(diff / 1000) % 60;
+  let minutes = Math.floor(diff / (1000 * 60)) % 60;
+  let hours = Math.floor(diff / (1000 * 60 * 60)) % 24;
+  let days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+  document.getElementById('countdown').textContent =
+    `${days}d ${hours}h ${minutes}m ${seconds}s`;
+}
+
+// Update every second
+updateTimes();
+setInterval(updateTimes, 1000);
+</script>
+
+</body>
+</html>
